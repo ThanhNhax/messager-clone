@@ -19,6 +19,13 @@ const AuthForm = () => {
       setVariant('LOGIN');
     }
   }, [variant]);
+  // const toggleVariant = () => {
+  //   if (variant === 'LOGIN') {
+  //     setVariant('REGISTER');
+  //   } else {
+  //     setVariant('LOGIN');
+  //   }
+  // };
   const {
     register,
     handleSubmit,
@@ -103,8 +110,8 @@ const AuthForm = () => {
               : 'Already have a account?'}
           </div>
           <div className='underline cursor-pointer' onClick={toggleVariant}>
-            {variant === 'LOGIN' ? 'Create an account' : 'Login'}
-          </div>
+            {variant === 'LOGIN' ? 'Create an account ' : 'Login '}
+          </div> 
         </div>
       </div>
     </div>
