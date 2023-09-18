@@ -7,6 +7,8 @@ import Button from '@/app/components/buttons/Button';
 import AuthSocialButton from './AuthSocialButton';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { signIn, useSession } from 'next-auth/react';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
@@ -43,15 +45,43 @@ const AuthForm = () => {
 
     if (variant === 'REGISTER') {
       // call register
-      axios.post('/api/register',data)
+      axios
+        .post('/api/register', data)
+        .then(() => {
+          toast.success('Reigned in successfully!');
+        })
+        .catch(() => toast.error('Something went wrong!'))
+        .finally(() => setIsLoading(false));
     }
     if (variant === 'LOGIN') {
       // call login
+      signIn('credentials', { ...data, redirect: false })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('Invalid credentials');
+          }
+          if (callback?.ok && !callback?.error) {
+            toast.success('Login successful!');
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
-  const sociaAction = (action: string) => {
+  const socialAction = (action: string) => {
     setIsLoading(true);
+
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error('Invalid credentials!');
+        }
+
+        if (callback?.ok) {
+          // router.push('/conversations');
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
   return (
     <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
@@ -96,11 +126,11 @@ const AuthForm = () => {
           <div className='mt-6 flex gap-2'>
             <AuthSocialButton
               icon={BsGithub}
-              onCLick={() => sociaAction('github')}
+              onCLick={() => socialAction('github')}
             />
             <AuthSocialButton
               icon={BsGoogle}
-              onCLick={() => sociaAction('google')}
+              onCLick={() => socialAction('google')}
             />
           </div>
         </div>
@@ -113,7 +143,7 @@ const AuthForm = () => {
           </div>
           <div className='underline cursor-pointer' onClick={toggleVariant}>
             {variant === 'LOGIN' ? 'Create an account ' : 'Login '}
-          </div> 
+          </div>
         </div>
       </div>
     </div>

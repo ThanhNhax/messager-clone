@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
-
+//  api post này chưa check email đã tồn tại.
 export async function POST(
   request: Request
 ) {
